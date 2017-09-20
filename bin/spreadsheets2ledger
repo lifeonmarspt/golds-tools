@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+bin/spreadsheets-jwt | bin/spreadsheets-access-token | bin/spreadsheets | bin/spreadsheets-json2tsv | bin/tsv2ledger
