@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+ID="$1"
+
+curl --silent \
+  -H "Authorization: Bearer $(cat)" \
+  "https://sheets.googleapis.com/v4/spreadsheets/$ID?includeGridData=true"

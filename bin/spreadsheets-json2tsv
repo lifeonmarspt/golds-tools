@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+require 'json'
+
+x = JSON.parse(ARGF.read)["sheets"][1..2].flat_map do |sheet|
+  sheet["data"][0]["rowData"].map do |row|
+    row["values"].map do |cell|
+      cell["effectiveValue"]&.values&.first
+    end
+  end
+end.reverse.drop_while do |row|
+  row.none?
+end.reverse.map do |row|
+  row.join("\t")
+end.join("\n")
+
+puts x

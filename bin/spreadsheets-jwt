@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+set -e
+
+PKEY="$(pass ${LOM_PASSWORD_DIRECTORY}all/golds/spreadsheets-api | jq -Sjc .private_key)"
+ISSUER="$(pass ${LOM_PASSWORD_DIRECTORY}all/golds/spreadsheets-api | jq -Sjc .client_email)"
+NOW="$(date +"%s")"
+EXP=$(( $NOW + 3600 ))
+
+HEADER="$(
+  jq -Sjcn '{"alg":"RS256","typ":"JWT"}' |
+  base64 -w0
+)"
+
+CLAIMS="$(
+  jq -Sjcn \
+    --arg exp "$EXP" \
+    --arg now "$NOW" \
+    --arg iss "$ISSUER" \
+    '{
+      "scope": "https://www.googleapis.com/auth/spreadsheets.readonly",
+      "aud": "https://www.googleapis.com/oauth2/v4/token",
+      "iss": $iss,
+      "exp": $exp,
+      "iat": $now
+    }' |
+  base64 -w0
+)"
+
+SIGNATURE="$(
+  echo -n "$HEADER.$CLAIMS" |
+  openssl dgst -sha256 -sign <(echo "$PKEY") |
+  base64 -w 0
+)"
+
+echo "$HEADER.$CLAIMS.$SIGNATURE"

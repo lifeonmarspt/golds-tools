@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+curl --silent --max-time 60 \
+  --data-urlencode "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer" \
+  --data-urlencode "assertion=$(cat)" \
+  https://www.googleapis.com/oauth2/v4/token |
+jq -r ".access_token"

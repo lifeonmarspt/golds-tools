@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/tsv_parser.rb'
+require_relative '../lib/ledger_generator.rb'
+
+puts parse_tsv(ARGF).map(&:to_ledger).join("\n\n")
