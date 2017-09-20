@@ -13,6 +13,7 @@ Then use ledger to query the golds:
 
 ```
 ledger -f golds.txt balance Expenses --depth 2
+ledger -f golds.txt balance ".*HugoPeixoto.*"
 ```
 
 Have fun :)
