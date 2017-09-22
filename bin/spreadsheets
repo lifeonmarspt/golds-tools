@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-ID="${1:-$(pass ${LOM_PASSWORD_DIRECTORY}all/golds/spreadsheets-id)}"
+ID="${1:-$(pass ${LIFEONMARS_PASSWORD_STORE_DIR}all/golds/spreadsheets-id)}"
 
 curl --silent \
   -H "Authorization: Bearer $(cat)" \
