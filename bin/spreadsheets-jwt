@@ -9,7 +9,8 @@ EXP=$(( $NOW + 3600 ))
 
 HEADER="$(
   jq -Sjcn '{"alg":"RS256","typ":"JWT"}' |
-  base64 -w0
+  base64 |
+  tr -d "\n"
 )"
 
 CLAIMS="$(
@@ -24,13 +25,15 @@ CLAIMS="$(
       "exp": $exp,
       "iat": $now
     }' |
-  base64 -w0
+  base64 |
+  tr -d "\n"
 )"
 
 SIGNATURE="$(
   echo -n "$HEADER.$CLAIMS" |
   openssl dgst -sha256 -sign <(echo "$PKEY") |
-  base64 -w 0
+  base64 |
+  tr -d "\n"
 )"
 
 echo "$HEADER.$CLAIMS.$SIGNATURE"
