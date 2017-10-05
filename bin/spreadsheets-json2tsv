@@ -2,7 +2,7 @@
 
 require 'json'
 
-x = JSON.parse(ARGF.read)["sheets"][1..2].flat_map do |sheet|
+x = JSON.parse(ARGF.read)["sheets"].first(2).flat_map do |sheet|
   sheet["data"][0]["rowData"].map do |row|
     row["values"].map do |cell|
       cell["effectiveValue"]&.values&.first
