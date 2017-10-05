@@ -2,8 +2,8 @@
 
 set -e
 
-PKEY="$(pass ${LOM_PASSWORD_DIRECTORY}all/golds/spreadsheets-api | jq -Sjc .private_key)"
-ISSUER="$(pass ${LOM_PASSWORD_DIRECTORY}all/golds/spreadsheets-api | jq -Sjc .client_email)"
+PKEY="$(pass ${LIFEONMARS_PASSWORD_STORE_DIR}all/golds/spreadsheets-api | jq -Sjc .private_key)"
+ISSUER="$(pass ${LIFEONMARS_PASSWORD_STORE_DIR}all/golds/spreadsheets-api | jq -Sjc .client_email)"
 NOW="$(date +"%s")"
 EXP=$(( $NOW + 3600 ))
 
