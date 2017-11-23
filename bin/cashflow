@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/golds/ledger'
+
+def amount_to_s amount
+  ["EUR", "USD", "GBP"].map do |currency|
+    if amount.value(currency) != 0
+      "#{"%.2f" % amount.value(currency)} #{currency}".rjust(14)
+    else
+      ""
+    end
+  end.join("\t")
+end
+
+DEPTH=3
+
+Golds::Ledger.
+  load(ARGF.read).
+  select { |transaction| transaction.accounts.grep(/Assets:Cash:/).any? }.
+  compact.
+  flat_map(&:movements).
+  group_by { |movement| movement.account.split(":").take(DEPTH).join(":") }.
+  transform_values { |movements| movements.map(&:amount).reduce(&:+) }.
+  to_a.
+  map { |account, amount| "#{account}\t#{amount_to_s(amount)}" }.
+  join("\n").
+  tap { |lines| puts lines }
