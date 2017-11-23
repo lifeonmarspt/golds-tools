@@ -1,27 +1,27 @@
-#!/usr/bin/env ruby
+module Golds
+  module Employees
+    class EmployeeTaxation < Struct.new(:salary, :dependents)
+      def withholding_data
+        DATA.split("\n").map {|line| line.split.map(&:to_r) }
+      end
 
-class EmployeeTaxation < Struct.new(:salary, :dependents)
-  def withholding_data
-    DATA.split("\n").map {|line| line.split.map(&:to_r) }
-  end
+      def yearly_social_security
+        salary.yearly * Rational(11, 100)
+      end
 
-  def yearly_social_security
-    salary.yearly * Rational(11, 100)
-  end
+      def withholding_income_tax_rate
+        Rational(1, 100) * withholding_data.find { |r| r[0] > salary.monthly }[1+[5,dependents].min]
+      end
 
-  def withholding_income_tax_rate
-    Rational(1, 100) * withholding_data.find { |r| r[0] > salary.monthly }[1+[5,dependents].min]
-  end
+      def yearly_withheld_income_tax
+        salary.yearly * withholding_income_tax_rate
+      end
 
-  def yearly_withheld_income_tax
-    salary.yearly * withholding_income_tax_rate
-  end
+      def yearly_total
+        yearly_social_security + yearly_withheld_income_tax
+      end
 
-  def yearly_total
-    yearly_social_security + yearly_withheld_income_tax
-  end
-
-  DATA = <<DATA
+      DATA = <<DATA
   615.00  0.0  0.0  0.0  0.0  0.0  0.0
   623.00  1.8  0.0  0.0  0.0  0.0  0.0
   645.00  5.0  0.0  0.0  0.0  0.0  0.0
@@ -60,4 +60,6 @@ class EmployeeTaxation < Struct.new(:salary, :dependents)
 25200.00 44.3 44.1 43.7 42.8 42.4 41.0
 99999.99 45.3 45.1 44.7 43.8 43.4 42.0
 DATA
+    end
+  end
 end

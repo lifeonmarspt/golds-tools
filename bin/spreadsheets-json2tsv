@@ -2,16 +2,19 @@
 
 require 'json'
 
-x = JSON.parse(ARGF.read)["sheets"].first(2).flat_map do |sheet|
+JSON.parse(ARGF.read)["sheets"].first(2).flat_map do |sheet|
   sheet["data"][0]["rowData"].map do |row|
     row["values"].map do |cell|
-      cell["effectiveValue"]&.values&.first
+      [
+        cell["effectiveValue"]&.values&.first,
+        cell["hyperlink"],
+      ].compact.join(";")
     end
   end
 end.reverse.drop_while do |row|
   row.none?
 end.reverse.map do |row|
   row.join("\t")
-end.join("\n")
-
-puts x
+end.join("\n").tap do |tsv|
+  puts tsv
+end

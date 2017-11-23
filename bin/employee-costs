@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
-require_relative '../lib/company_cost.rb'
-require_relative '../lib/gross_salary.rb'
+require_relative '../lib/golds/employees/company_cost.rb'
+require_relative '../lib/golds/employees/gross_salary.rb'
 
 gross_salary = (ARGV[0] || 1000).to_i
 
-puts CompanyCost.new(GrossSalary.new(gross_salary)).yearly_total
+puts Golds::Employees::CompanyCost.new(Golds::Employees::GrossSalary.new(gross_salary)).yearly_total
