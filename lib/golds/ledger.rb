@@ -32,7 +32,7 @@ module Golds
           end,
 
           *movements.map do |movement|
-            "  #{movement.account} #{"%.2f" % movement.value} #{movement.currency}"
+            "  #{movement.account}     #{"%.2f" % movement.value} #{movement.currency}"
           end
         ].join("\n")
       end
