@@ -2,26 +2,73 @@
 
 require_relative '../lib/golds/ledger'
 
-def amount_to_s amount
-  ["EUR", "USD", "GBP"].map do |currency|
-    if amount.value(currency) != 0
-      "#{"%.2f" % amount.value(currency)} #{currency}".rjust(14)
-    else
-      ""
-    end
-  end.join("\t")
+def amount_to_s amount, currency
+  if amount.value(currency) != 0
+    "%.2f" % -amount.value(currency)
+  else
+    ""
+  end
 end
 
-DEPTH=3
+$depths = File.
+  read("cashflow.txt").
+  split("\n").
+  map(&:strip).
+  reject(&:empty?).
+  map(&:split).
+  map { |prefix, depth| [prefix, depth.to_i] }
 
-Golds::Ledger.
+def depth account
+  $depths.find do |prefix, depth|
+    account.start_with?(prefix)
+  end.last
+end
+
+def prefix account
+  account.split(":").take(depth(account)).join(":")
+end
+
+def month date
+  Date.new date.year, date.month, 1
+end
+
+transactions = Golds::Ledger.
   load(ARGF.read).
-  select { |transaction| transaction.accounts.grep(/Assets:Cash:/).any? }.
-  compact.
+  select { |transaction| transaction.accounts.grep(/Assets:Cash:/).any? }
+
+accounts = transactions.
   flat_map(&:movements).
-  group_by { |movement| movement.account.split(":").take(DEPTH).join(":") }.
-  transform_values { |movements| movements.map(&:amount).reduce(&:+) }.
-  to_a.
-  map { |account, amount| "#{account}\t#{amount_to_s(amount)}" }.
-  join("\n").
-  tap { |lines| puts lines }
+  map(&:account).
+  map { |account| prefix(account) }.
+  uniq.
+  reject { |account| account.start_with?("Assets:Cash:") }.
+  sort
+
+months = transactions.
+  map { |transaction| month(transaction.date) }.
+  uniq
+
+amounts = transactions.
+  group_by { |transaction| month(transaction.date) }.
+  transform_values do |transactions|
+    transactions.
+      flat_map(&:movements).
+      group_by { |m| prefix(m.account) }.
+      transform_values { |movements| movements.map(&:amount).reduce(&:+) }
+  end
+
+currencies = ["EUR", "USD", "GBP"]
+
+accounts.map do |account|
+  [
+    account,
+    *months.flat_map do |month|
+      currencies.map do |currency|
+        amount_to_s(amounts[month][account] || Golds::Amount.zero, currency)
+      end
+    end,
+  ].join(",")
+end.
+join("\n").
+tap { |cf| puts cf }.
+itself

@@ -44,3 +44,15 @@ transactions = Golds::JSON.load(File.read("golds.json"))
 
 Golds::Ledger.dump(transactions)
 ```
+
+
+## Cashflow
+
+To update the cashflow sheet, run the following command, which creates a csv
+file, and import it into google spreadsheets:
+
+```
+cat golds.txt | bin/cashflow > cashflow.csv
+```
+
+This requires a `cashflow.txt` file containing account collapsing rules.

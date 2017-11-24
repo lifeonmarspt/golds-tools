@@ -1,0 +1,20 @@
+Assets:Receivable:Services  4
+Assets:Equipment            2
+Expenses:BrandAwareness     2
+Expenses:Community          2
+Expenses:Company            2
+Expenses:Office             2
+Expenses:Services           2
+Expenses:Transportation     2
+Expenses:Travel             2
+Expenses:MobilePhone        2
+Expenses:Meals              2
+Expenses:Licenses           2
+Expenses:BankCharges        2
+Revenues:BankInterest       2
+Exchanges                   1
+
+Assets                      3
+Liabilities                 3
+Expenses                    3
+Revenues                    3
