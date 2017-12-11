@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+
+require 'thor'
+require_relative '../lib/golds/commands'
+
+class GoldsCLI < Thor
+  class_option :file, default: nil, required: false
+
+  desc "cashflow", "Generate cashflow report"
+  option :cashflow_mapping, type: :string, default: nil
+  def cashflow
+    Golds::Commands.new(options).cashflow
+  end
+
+  desc "profit-and-loss", "Generate profit and loss report"
+  option :pnl_mapping, type: :string, default: nil
+  def profit_and_loss
+    Golds::Commands.new(options).profit_and_loss
+  end
+end
+
+GoldsCLI.start(ARGV)
